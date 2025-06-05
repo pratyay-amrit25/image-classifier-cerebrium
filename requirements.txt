@@ -1,5 +1,7 @@
-onnxruntime==1.22.0
-numpy==2.0.2
+uvicorn==0.23.2
+numpy==1.26.4
 Pillow==10.4.0
 fastapi==0.115.0
-uvicorn==0.23.2
+onnx==1.16.2
+onnxruntime==1.20.0
+python-multipart==0.0.9
