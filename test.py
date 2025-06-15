@@ -5,18 +5,18 @@ from PIL import Image
 import os # For creating a dummy invalid file
 
 class TestImageClassifier(unittest.TestCase):
-    def setUp(self):
-        self.model = OnnxModel()
+    def setUp(self) -> None:
+        self.model: OnnxModel = OnnxModel()
         # Ensure test images are available or skip tests
-        self.test_image_tench = "images/n01440764_tench.jpg"
-        self.test_image_turtle = "images/n01667114_mud_turtle.jpg"
-        self.invalid_image_path = "invalid_image.jpg"
+        self.test_image_tench: str = "images/n01440764_tench.jpg"
+        self.test_image_turtle: str = "images/n01667114_mud_turtle.jpg"
+        self.invalid_image_path: str = "invalid_image.jpg"
 
         # Create a dummy invalid image file for testing error handling
         with open(self.invalid_image_path, "w") as f:
             f.write("this is not an image")
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         # Clean up the dummy invalid image file
         if os.path.exists(self.invalid_image_path):
             os.remove(self.invalid_image_path)
@@ -27,7 +27,7 @@ class TestImageClassifier(unittest.TestCase):
             os.remove("test_invalid.jpg")
 
 
-    def test_model_prediction_tench(self):
+    def test_model_prediction_tench(self) -> None:
         if not os.path.exists(self.test_image_tench):
             self.skipTest(f"Test image {self.test_image_tench} not found.")
 
@@ -37,7 +37,7 @@ class TestImageClassifier(unittest.TestCase):
         self.assertEqual(probabilities.shape[0], 1000) # Assuming 1000 classes
         self.assertEqual(class_id, 0) # Expected class ID for tench
 
-    def test_model_prediction_turtle(self):
+    def test_model_prediction_turtle(self) -> None:
         if not os.path.exists(self.test_image_turtle):
             self.skipTest(f"Test image {self.test_image_turtle} not found.")
 
@@ -47,7 +47,7 @@ class TestImageClassifier(unittest.TestCase):
         self.assertEqual(probabilities.shape[0], 1000) # Assuming 1000 classes
         self.assertEqual(class_id, 35) # Expected class ID for mud turtle
 
-    def test_invalid_image_file(self):
+    def test_invalid_image_file(self) -> None:
         # Expecting an error when trying to open an invalid image file
         # PIL.UnidentifiedImageError is a common exception for this,
         # but onnxruntime or other parts of the predict function might raise others.
