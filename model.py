@@ -1,12 +1,13 @@
 import onnxruntime
 from PIL import Image
 import numpy as np
+from typing import Tuple
 
 class OnnxModel:
-    def __init__(self):
+    def __init__(self) -> None:
         self.session = onnxruntime.InferenceSession("image_classifier.onnx")
 
-    def predict(self, image_path):
+    def predict(self, image_path: str) -> Tuple[np.ndarray, np.int64]:
         image = Image.open(image_path)
         if image.mode != "RGB":
             image = image.convert("RGB")

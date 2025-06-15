@@ -1,16 +1,18 @@
 import requests
 import argparse
 import time
+from argparse import Namespace
+from typing import Dict, Any, List, Tuple
 
-def test_endpoint(image_path, api_key, endpoint_url):
+def test_endpoint(image_path: str, api_key: str, endpoint_url: str) -> None:
     # Adjust endpoint URL for local testing (append /predict if needed)
     if "localhost" in endpoint_url and not endpoint_url.endswith("/predict"):
         endpoint_url = f"{endpoint_url}/predict"
     
     # Use X-API-Key header (Cerebrium style), or skip if not needed locally
-    headers = {"X-API-Key": api_key}
+    headers: Dict[str, str] = {"X-API-Key": api_key}
     with open(image_path, "rb") as image_file:
-        files = {"image": (image_path, image_file, "image/jpeg")}
+        files: Dict[str, Tuple[str, Any, str]] = {"image": (image_path, image_file, "image/jpeg")}
         start_time = time.time()
         response = requests.post(endpoint_url, headers=headers, files=files)
         latency = time.time() - start_time
@@ -24,8 +26,8 @@ def test_endpoint(image_path, api_key, endpoint_url):
         else:
             print(f"Failed with status {response.status_code}: {response.text}")
 
-def run_custom_tests(api_key, endpoint_url):
-    tests = [
+def run_custom_tests(api_key: str, endpoint_url: str) -> None:
+    tests: List[Tuple[str, int]] = [
         ("images/n01440764_tench.jpg", 0),
         ("images/n01667114_mud_turtle.jpg", 35)
     ]
@@ -45,10 +47,11 @@ def run_custom_tests(api_key, endpoint_url):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test Cerebrium deployed model")
     parser.add_argument("--image", help="Path to test image")
+    # Note: The API key and endpoint URL for a deployed Cerebrium model can be found on your Cerebrium dashboard.
     parser.add_argument("--api-key", required=True, help="API key (use dummy-key for local testing)")
     parser.add_argument("--endpoint", required=True, help="Endpoint URL (e.g., http://localhost:8000 or Cerebrium URL)")
     parser.add_argument("--custom-tests", action="store_true", help="Run custom tests")
-    args = parser.parse_args()
+    args: Namespace = parser.parse_args()
 
     if args.custom_tests:
         run_custom_tests(args.api_key, args.endpoint)
